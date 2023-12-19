@@ -44,8 +44,7 @@ landing_pad(Request) :-
 	    \headers,
 	    [
 		p([Finalvalue])
-	    ]),
-	portray_clause(Data).
+	    ]).
 
 headers --> html([
 		       title('DCA-calculator.com'),
