@@ -15,7 +15,7 @@ server(Port) :-
 
 say_hi(_Request) :-
     reply_html_page(
-	[\headers],
+	\headers,
 	[h1('DCA-calculator.com'),
 	 
          p(['This example demonstrates generating HTML ',
@@ -41,7 +41,7 @@ landing_pad(Request) :-
 	atom_number(Data.nummonths, NM),
 	dollar_cost_averaging(II, MI, MRR, NM, Finalvalue),
         reply_html_page(
-	    [\titlep],
+	    \headers,
 	    [
 		p([Finalvalue])
 	    ]),
