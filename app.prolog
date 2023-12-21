@@ -42,7 +42,9 @@ say_hi(_Request) :-
 		      ':root {
   		      	     --color-primary: #da1d50; /* brand color */
   			     --grid-maxWidth: 50rem; /* max container width 1080px */
-			}'
+			}
+
+			h1 { color: #da1d50; font-size: 40px; font-weight: 800; line-height: 80px; margin: 0 0 24px; text-align: center; text-transform: uppercase; }'
 		  ])
 	]).
 
