@@ -5,7 +5,6 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/html_write)).
 :- use_module(library(http/http_error)).
-:- use_module(library(http/http_unix_daemon)).
 :- use_module(library(http/http_log)).
 :- use_module(library(http/http_dyn_workers)).
 
