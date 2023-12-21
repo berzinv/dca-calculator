@@ -31,7 +31,7 @@ say_hi(_Request) :-
 					 label([for='monthlyinvestment'], ['Investissement mensuel :']),
 					 input([type='number', name='monthlyinvestment', placeholder='Exemple: 1000']), br(''),
 					 label([for='monthlyreturnrate'], ['Rendement mensuel :']),
-					 input([type='number', name='monthlyreturnrate', placeholder='Exemple: 0.5']), br(''),
+					 input([type='number', name='monthlyreturnrate', step='0.1', placeholder='Exemple: 0.5']), br(''),
 					 label([for='nummonths'], ['Nombre de mois :']),
 					 input([type='number', name='nummonths', type='number', placeholder='Exemple: 24']), br(''),
 					 input([type='submit', value="Calculer"])
@@ -44,7 +44,7 @@ say_hi(_Request) :-
   			     --grid-maxWidth: 50rem; /* max container width 1080px */
 			}
 
-			h1 { color: #da1d50; font-size: 40px; font-weight: 800; line-height: 80px; margin: 0 0 24px; text-align: center; text-transform: uppercase; }'
+			h1 { color: #da1d50; font-size: 2vw; font-weight: 800; line-height: 80px; margin: 0 0 24px; text-align: center; text-transform: uppercase; }'
 		  ])
 	]).
 
