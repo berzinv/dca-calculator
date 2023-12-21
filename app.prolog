@@ -1,15 +1,20 @@
+:- module(app, [ server/1]).
+
 :- use_module(library(http/http_client)).
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/html_write)).
 :- use_module(library(http/http_error)).
+:- use_module(library(http/http_unix_daemon)).
+:- use_module(library(http/http_log)).
+:- use_module(library(http/http_dyn_workers)).
 
 :- use_module(yahoofinance).
 :- use_module(dca).
 
 %%%%% web part %%%%%
 server(Port) :-
-    http_server(http_dispatch, [port(Port)]).
+    http_server(http_dispatch, [port(Port), workers(16)]).
 
 :- http_handler(/, say_hi, []).
 
