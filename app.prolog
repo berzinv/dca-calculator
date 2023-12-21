@@ -16,18 +16,30 @@ server(Port) :-
 say_hi(_Request) :-
     reply_html_page(
 	\headers,
-	[h1('DCA-calculator.com'),
-	 
-         p(['This example demonstrates generating HTML ',
-            'messages from Prolog'
-           ]),
-	 form([method='post', action='/landing'], [
-		  input([type='text', name='initialinvestment', placeholder='Initial investment']),br(''),
-		  input([type='text', name='monthlyinvestment', placeholder='Monthly investment']), br(''),
-		  input([type='text', name='monthlyreturnrate', placeholder='Monthly return rate']), br(''),
-		  input([type='text', name='nummonths', type='number', placeholder='Number of months']), br(''),
-		  input([type='submit', value="Go"])
-	      ])
+	[
+	    div(class='container', [
+		    h1([align='center'], 'DCA-calculator.com'),
+
+		    section([id='calculator'], [
+				form([method='post', action='/landing'], [
+					 label([for='initialinvestment'], ['Investissement initial :']),
+					 input([type='number', name='initialinvestment', placeholder='Exemple: 1000']),br(''),
+					 label([for='monthlyinvestment'], ['Investissement mensuel :']),
+					 input([type='number', name='monthlyinvestment', placeholder='Exemple: 1000']), br(''),
+					 label([for='monthlyreturnrate'], ['Rendement mensuel :']),
+					 input([type='number', name='monthlyreturnrate', placeholder='Exemple: 0.5']), br(''),
+					 label([for='nummonths'], ['Nombre de mois :']),
+					 input([type='number', name='nummonths', type='number', placeholder='Exemple: 24']), br(''),
+					 input([type='submit', value="Calculer"])
+				     ])
+			    ])
+		]),
+	    style([], [
+		      ':root {
+  		      	     --color-primary: #da1d50; /* brand color */
+  			     --grid-maxWidth: 50rem; /* max container width 1080px */
+			}'
+		  ])
 	]).
 
 :- http_handler('/landing', landing_pad, []).
@@ -48,5 +60,6 @@ landing_pad(Request) :-
 
 headers --> html([
 		       title('DCA-calculator.com'),
-		       meta([name='viewport', content='width=device-width, initial-scale=1'])
+		       meta([name='viewport', content='width=device-width, initial-scale=1']),
+		       link([rel='stylesheet', href='https://unpkg.com/chota@latest'])
 		   ]).
