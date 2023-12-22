@@ -1,4 +1,4 @@
-:- module(yahoofinance, [get_prices/2]).
+:- module(yahoofinance, [yahoo_finance/5]).
 :- use_module(library(http/http_client)).
 :- use_module(library(csv)).
 :- use_module(library(apply)).
@@ -24,3 +24,11 @@ get_prices(Url, Prices) :-
     csv_read_stream(S, Rows, []),
     maplist([row(Date, _, _, _, _, ClosePrice, _), [Date, ClosePrice]] >> true, Rows, Prices).
 
+%% yahoo_finance/5 
+%%
+%% Ticker: string
+%% StartDate, EndDate: string. Example: '2023-10-20'
+%% Interval: '1d', '1w', '1m'
+yahoo_finance(Ticker, StartDate, EndDate, Interval, Data) :-
+    build_url(Ticker, StartDate, EndDate, Interval, Url),
+    get_prices(Url, Data).
