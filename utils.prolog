@@ -2,7 +2,8 @@
 	      get_first_item/2,
 	      get_rest/2,
 	      lists_to_string/2,
-	      list_to_string/2
+	      list_to_string/2,
+	      replace_nulls/3
 	  ]).
 
 % Get first item of a list
@@ -18,3 +19,11 @@ lists_to_string(Lists, Result) :-
 % Convert a list to a string
 list_to_string(List, Result) :-
     atomic_list_concat(List, ', ', Result).
+
+% Replace null values in a list with the previous non-null value
+replace_nulls([], _, []).
+replace_nulls([null | Rest], Prev, [Prev | TransformedRest]) :-
+    replace_nulls(Rest, Prev, TransformedRest).
+replace_nulls([X | Rest], _, [X | TransformedRest]) :-
+    X \= null,
+    replace_nulls(Rest, X, TransformedRest).
