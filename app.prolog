@@ -64,12 +64,11 @@ results_page(Request) :-
 	atom_number(Data.monthlyinvestment, MI),
 	atom_number(Data.monthlyreturnrate, MRR),
 	atom_number(Data.nummonths, NM),
-	parse_time(Data.startdate, SD),
-	parse_time(Data.enddate, ED),
-	yahoo_finance('TTE.PA', '2023-01-01', '2023-12-01', '1d', YFData),
+	yahoo_finance(Data.ticker, Data.startdate, Data.enddate, '1d', YFData),
 	maplist(get_first_item, YFData, Dates),
 	maplist(get_rest, YFData, Prices),
-	lists_to_string(Prices, PricesStr),
+	replace_nulls(Prices, _, PricesNonNull),
+	lists_to_string(PricesNonNull, PricesStr),
 	dollar_cost_averaging(II, MI, MRR, NM, Finalvalue),
         reply_html_page(
 	    \headers,
@@ -77,34 +76,32 @@ results_page(Request) :-
 		p([Finalvalue]),
 		p([Dates]),
 		p([PricesStr]),
-		p([SD]),
-		p([ED]),
 		div([], [
 			canvas([id='myChart'], [])
 		    ]),
 		\js_script({| javascript(Dates, Prices)  ||
 			      const ctx = document.getElementById('myChart');
 
-						   new Chart(ctx, {
-								 type: 'bar',
-								 data: {
-								     labels: Dates,
-								     datasets: [{
-										       label: 'Price',
-										       data: Prices,
-										       fill: false,
-										       borderColor: 'rgb(75, 192, 192)',
-										       tension: 0.1
-										   }]
-								 },
-								 options: {
-								     scales: {
-									 y: {
-									     beginAtZero: true
-									 }
-								     }
-								 }
-							     });			    
+				new Chart(ctx, {
+					 type: 'line',
+					 data: {
+					     labels: Dates,
+					     datasets: [{
+							       label: 'Prix',
+							       data: Prices,
+							       fill: false,
+							       borderColor: 'rgb(75, 192, 192)',
+							       tension: 0.1
+							   }]
+					 },
+					 options: {
+					     scales: {
+						 y: {
+						     beginAtZero: true
+						 }
+					     }
+					 }
+				     });			    
 			    |})
 		]),
 	portray_clause(Data).
