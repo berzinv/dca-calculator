@@ -7,9 +7,11 @@
 :- use_module(library(http/http_error)).
 :- use_module(library(http/http_log)).
 :- use_module(library(http/http_dyn_workers)).
+:- use_module(library(http/js_write)).
 
 :- use_module(yahoofinance).
 :- use_module(dca).
+:- use_module(utils).
 
 server(Port) :-
     http_server(http_dispatch, [port(Port), workers(16)]).
@@ -24,7 +26,7 @@ home_page(_Request) :-
 		    h1([align='center'], 'DCA-calculator.com'),
 
 		    section([id='calculator'], [
-				form([method='post', action='/landing'], [
+				form([method='post', action='/results'], [
 					 label([for='ticker'], ['Symbole :']),
 					 input([type='text', name='ticker', placeholder='Exemple: PSP5.PA']), br(''),
 					 label([for='initialinvestment'], ['Investissement initial :']),
@@ -53,7 +55,7 @@ home_page(_Request) :-
 		  ])
 	]).
 
-:- http_handler('/landing', results_page, []).
+:- http_handler('/results', results_page, []).
 
 results_page(Request) :-
         member(method(post), Request), !,
@@ -64,16 +66,47 @@ results_page(Request) :-
 	atom_number(Data.nummonths, NM),
 	parse_time(Data.startdate, SD),
 	parse_time(Data.enddate, ED),
-	yahoo_finance('TTE.PA', '2023-01-01', '2023-12-01', '1d', Prices),
+	yahoo_finance('TTE.PA', '2023-01-01', '2023-12-01', '1d', YFData),
+	maplist(get_first_item, YFData, Dates),
+	maplist(get_rest, YFData, Prices),
+	lists_to_string(Prices, PricesStr),
 	dollar_cost_averaging(II, MI, MRR, NM, Finalvalue),
         reply_html_page(
 	    \headers,
 	    [
 		p([Finalvalue]),
-		p([Prices]),
+		p([Dates]),
+		p([PricesStr]),
 		p([SD]),
-		p([ED])
-	    ]),
+		p([ED]),
+		div([], [
+			canvas([id='myChart'], [])
+		    ]),
+		\js_script({| javascript(Dates, Prices)  ||
+			      const ctx = document.getElementById('myChart');
+
+						   new Chart(ctx, {
+								 type: 'bar',
+								 data: {
+								     labels: Dates,
+								     datasets: [{
+										       label: 'Price',
+										       data: Prices,
+										       fill: false,
+										       borderColor: 'rgb(75, 192, 192)',
+										       tension: 0.1
+										   }]
+								 },
+								 options: {
+								     scales: {
+									 y: {
+									     beginAtZero: true
+									 }
+								     }
+								 }
+							     });			    
+			    |})
+		]),
 	portray_clause(Data).
 
 headers --> html([

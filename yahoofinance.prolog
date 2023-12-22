@@ -21,7 +21,7 @@ build_url(Ticker, Period1, Period2, Interval, Url) :-
 get_prices(Url, Prices) :-
     http_get(Url, Data, []),
     open_string(Data, S),
-    csv_read_stream(S, Rows, []),
+    csv_read_stream(S, Rows, [skip_header('Date')]),
     maplist([row(Date, _, _, _, _, ClosePrice, _), [Date, ClosePrice]] >> true, Rows, Prices).
 
 %% yahoo_finance/5 
