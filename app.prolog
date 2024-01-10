@@ -94,7 +94,7 @@ results_page(Request) :-
 					 options: {
 					     scales: {
 						 y: {
-						     beginAtZero: true
+						     beginAtZero: false
 						 }
 					     }
 					 }
