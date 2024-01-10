@@ -8,6 +8,7 @@
 :- use_module(library(http/http_log)).
 :- use_module(library(http/http_dyn_workers)).
 :- use_module(library(http/js_write)).
+:- use_module(library(lists)).
 
 :- use_module(yahoofinance).
 :- use_module(dca).
@@ -68,6 +69,7 @@ results_page(Request) :-
 	maplist(get_first_item, YFData, Dates),
 	maplist(get_rest, YFData, Prices),
 	replace_nulls(Prices, _, PricesNonNull),
+	flatten(PricesNonNull, FinalPrices),
 	lists_to_string(PricesNonNull, PricesStr),
 	dollar_cost_averaging(II, MI, MRR, NM, Finalvalue),
         reply_html_page(
@@ -79,7 +81,7 @@ results_page(Request) :-
 		div([], [
 			canvas([id='myChart'], [])
 		    ]),
-		\js_script({| javascript(Dates, Prices)  ||
+		\js_script({| javascript(Dates, FinalPrices)  ||
 			      const ctx = document.getElementById('myChart');
 
 				new Chart(ctx, {
@@ -88,7 +90,7 @@ results_page(Request) :-
 					     labels: Dates,
 					     datasets: [{
 							       label: 'Prix',
-							       data: Prices,
+							       data: FinalPrices,
 							       fill: false,
 							       borderColor: 'rgb(75, 192, 192)',
 							       tension: 0.1
