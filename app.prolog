@@ -88,7 +88,8 @@ results_page(Request) :-
 							       data: FinalPrices,
 							       fill: false,
 							       borderColor: 'rgb(75, 192, 192)',
-							       tension: 0.1
+							       tension: 0.1,
+							       pointRadius: 0
 							   }]
 					 },
 					 options: {
